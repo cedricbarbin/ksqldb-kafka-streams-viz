@@ -2,6 +2,8 @@
 
 A tool helps visualizing stream topologies by generating nice looking diagrams from a kafka stream topology descriptions.
 
+You might experiment issue with CORS rules : configure your ksqlDB API to allow this source, or use a plugin like [Moesif CORS](https://chrome.google.com/webstore/detail/moesif-origin-cors-change/digfbfaphojjndkpccljibejjbppifbc).
+
 ## [Try now](https://zz85.github.io/kafka-streams-viz)
 
 This was conceived during one of the lab days @ Zendesk Singapore.
