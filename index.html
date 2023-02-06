@@ -8,7 +8,7 @@
 
 		textarea {
 			font-family: 'monospace';
-			width: 400px;
+			width: 700px;
 			height: 400px;
 	  	}
 
@@ -27,45 +27,109 @@
 		a {
 			color: #999;
 		}
+		span{
+		display: inline-block;
+		width: 150px;
+		}
 	</style>
 	<script src="vendor/viz-lite.js"></script>
 	<script src="vendor/rough.min.js"></script>
 
-	<h2>Kafka Streams Topology Visualizer</h2>
+	<h2>ksqlDB - Kafka Streams Topology Visualizer</h2>
 
-	Converts an ASCII Kafka Topology description into a hand drawn diagram. <a href="https://github.com/zz85/kafka-streams-viz">Github link</a>.
+	Converts an list of ksqlDB STREAM/TABLE to a Kafka Topology hand drawn diagram. <a href="https://github.com/cedricbarbin/ksqldb-kafka-streams-viz">Github link</a>.
+	<br><i>Based on zz85 project : Converts an ASCII Kafka Topology description into a hand drawn diagram. <a href="https://github.com/zz85/kafka-streams-viz">Github link</a></i>
 
 	<container>
 		<div>
-			<h4>Input Kafka Topology <button onclick="update()">update</button></h4>
-			<textarea id="input" onkeydown="scheduleUpdate()" onpaste="scheduleUpdate()">
+			<h4>
+				<span>ksqlDB URL :</span><input type="text" id="url" value="https://server:8088/ksql" size="50"><br>
+				<span>End STREAM/TABLE :</span><input type="text" id="final-topics" value="MY_OUTPUT_TABLE" size="50"><br>
+				<br><button onclick="getFromServer()">get from ksqlDB</button></h4>
+			<textarea id="queries"></textarea>
+			<textarea id="input" onchange="update()">
 Topology
 Sub-topologies:
-Sub-topology: 0
-	Source:  KSTREAM-SOURCE-0000000000 (topics: [conversation-meta])
-	--> KSTREAM-TRANSFORM-0000000001
-	Processor: KSTREAM-TRANSFORM-0000000001 (stores: [conversation-meta-state])
-	--> KSTREAM-KEY-SELECT-0000000002
-	<-- KSTREAM-SOURCE-0000000000
-	Processor: KSTREAM-KEY-SELECT-0000000002 (stores: [])
-	--> KSTREAM-FILTER-0000000005
-	<-- KSTREAM-TRANSFORM-0000000001
-	Processor: KSTREAM-FILTER-0000000005 (stores: [])
-	--> KSTREAM-SINK-0000000004
-	<-- KSTREAM-KEY-SELECT-0000000002
-	Sink: KSTREAM-SINK-0000000004 (topic: count-resolved-repartition)
-	<-- KSTREAM-FILTER-0000000005
-Sub-topology: 1
-	Source: KSTREAM-SOURCE-0000000006 (topics: [count-resolved-repartition])
-	--> KSTREAM-AGGREGATE-0000000003
-	Processor: KSTREAM-AGGREGATE-0000000003 (stores: [count-resolved])
-	--> KTABLE-TOSTREAM-0000000007
-	<-- KSTREAM-SOURCE-0000000006
-	Processor: KTABLE-TOSTREAM-0000000007 (stores: [])
-	--> KSTREAM-SINK-0000000008
-	<-- KSTREAM-AGGREGATE-0000000003
-	Sink: KSTREAM-SINK-0000000008 (topic: streams-count-resolved)
-	<-- KTABLE-TOSTREAM-0000000007
+Sub-topology: 1000
+	Source:  KSTREAM-SOURCE-1000000000 (topics: [AAA])
+	--> KSTREAM-TRANSFORM-1000000001
+	Processor: KSTREAM-TRANSFORM-1000000001 (stores: [1-Store])
+	--> KSTREAM-KEY-SELECT-1000000002
+	<-- KSTREAM-SOURCE-1000000000
+	Processor: KSTREAM-KEY-SELECT-1000000002 (stores: [])
+	--> KSTREAM-FILTER-1000000005
+	<-- KSTREAM-TRANSFORM-1000000001
+	Processor: KSTREAM-FILTER-1000000005 (stores: [])
+	--> KSTREAM-SINK-1000000004
+	<-- KSTREAM-KEY-SELECT-1000000002
+	Sink: KSTREAM-SINK-1000000004 (topic: tmp)
+	<-- KSTREAM-FILTER-1000000005
+Sub-topology: 1001
+	Source: KSTREAM-SOURCE-1000000006 (topics: [tmp])
+	--> KSTREAM-AGGREGATE-1000000003
+	Processor: KSTREAM-AGGREGATE-1000000003 (stores: [])
+	--> KTABLE-TOSTREAM-1000000007
+	<-- KSTREAM-SOURCE-1000000006
+	Processor: KTABLE-TOSTREAM-1000000007 (stores: [])
+	--> KSTREAM-SINK-1000000008
+	<-- KSTREAM-AGGREGATE-1000000003
+	Sink: KSTREAM-SINK-1000000008 (topic: CCC)
+	<-- KTABLE-TOSTREAM-1000000007
+Sub-topology: 2000
+	Source: KSTREAM-SOURCE-2000000006 (topics: [CCC])
+	--> KSTREAM-AGGREGATE-2000000003
+	Processor: KSTREAM-AGGREGATE-2000000003 (stores: [2-Store])
+	--> KTABLE-TOSTREAM-2000000007
+	<-- KSTREAM-SOURCE-2000000006
+	Processor: KTABLE-TOSTREAM-2000000007 (stores: [])
+	--> KSTREAM-SINK-2000000008
+	<-- KSTREAM-AGGREGATE-2000000003
+	Sink: KSTREAM-SINK-2000000008 (topic: DDD)
+	<-- KTABLE-TOSTREAM-2000000007
+Sub-topology: 3000
+	Source: KSTREAM-SOURCE-3000000012 (topics: [DDD])
+	--> KSTREAM-AGGREGATE-3000000009
+	Processor: KSTREAM-AGGREGATE-3000000009 (stores: [3-Store])
+	--> KTABLE-TOSTREAM-3000000013
+	<-- KSTREAM-SOURCE-3000000012
+	Processor: KTABLE-TOSTREAM-3000000013 (stores: [])
+	--> KSTREAM-SINK-3000000014
+	<-- KSTREAM-AGGREGATE-3000000006
+	Sink: KSTREAM-SINK-3000000014 (topic: EEE)
+	<-- KTABLE-TOSTREAM-3000000019
+Sub-topology: 4000
+	Source: KSTREAM-SOURCE-4000000018 (topics: [BBB])
+	--> KSTREAM-AGGREGATE-4000000015
+	Processor: KSTREAM-AGGREGATE-4000000015 (stores: [])
+	--> KTABLE-TOSTREAM-4000000019
+	<-- KSTREAM-SOURCE-4000000018
+	Processor: KTABLE-TOSTREAM-4000000019 (stores: [])
+	--> KSTREAM-SINK-4000000020
+	<-- KSTREAM-AGGREGATE-4000000012
+	Sink: KSTREAM-SINK-4000000020 (topic: FFF)
+	<-- KTABLE-TOSTREAM-4000000025
+Sub-topology: 5000
+	Source: KSTREAM-SOURCE-5000000024 (topics: [EEE,FFF])
+	--> KSTREAM-AGGREGATE-5000000021
+	Processor: KSTREAM-AGGREGATE-5000000021 (stores: [5-Store1,5-Store2])
+	--> KTABLE-TOSTREAM-5000000025
+	<-- KSTREAM-SOURCE-5000000024
+	Processor: KTABLE-TOSTREAM-5000000025 (stores: [])
+	--> KSTREAM-SINK-5000000026
+	<-- KSTREAM-AGGREGATE-5000000018
+	Sink: KSTREAM-SINK-5000000026 (topic: TOPIC1)
+	<-- KTABLE-TOSTREAM-5000000031
+Sub-topology: 6000
+	Source: KSTREAM-SOURCE-6000000030 (topics: [FFF])
+	--> KSTREAM-AGGREGATE-6000000027
+	Processor: KSTREAM-AGGREGATE-6000000027 (stores: [])
+	--> KTABLE-TOSTREAM-6000000031
+	<-- KSTREAM-SOURCE-6000000030
+	Processor: KTABLE-TOSTREAM-6000000031 (stores: [])
+	--> KSTREAM-SINK-6000000032
+	<-- KSTREAM-AGGREGATE-6000000024
+	Sink: KSTREAM-SINK-6000000032 (topic: TOPIC2)
+	<-- KTABLE-TOSTREAM-6000000037
 			</textarea>
 		</div>
 
@@ -80,6 +144,7 @@ Sub-topology: 1
 
 	<div id="results"></div>
 	<script src="main.js"></script>
+	<script src="fork.js"></script>
 
 	</body>
 </html>
