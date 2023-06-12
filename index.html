@@ -45,7 +45,7 @@
 		<div>
 			<h4>
 				<span>ksqlDB URL :</span><input type="text" id="url" value="https://server:8088/ksql" size="50"><br>
-				<span>End STREAM/TABLE :</span><input type="text" id="final-topics" value="MY_OUTPUT_TABLE" size="50"><br>
+				<span>End STREAM/TABLE :</span><input type="text" id="final-topics" value="TOPIC" size="50"><br>
 				<br><button onclick="getFromServer()">get from ksqlDB</button></h4>
 			<textarea id="queries"></textarea>
 			<textarea id="input" onchange="update()">
@@ -146,6 +146,7 @@ Sub-topology: 6000
 	<div id="results"></div>
 	<script src="main.js"></script>
 	<script src="fork.js"></script>
+	<script src="../default.js"></script>
 
 	</body>
 </html>
