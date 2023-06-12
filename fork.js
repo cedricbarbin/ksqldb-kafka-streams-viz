@@ -1,4 +1,5 @@
 function getFromServer() {
+
 	// retrieve form informations
 	const server = document.getElementById("url").value;
 	const topics = document.getElementById("final-topics").value.split(";");
@@ -8,7 +9,6 @@ function getFromServer() {
 
 	var myHeaders = new Headers();
 	myHeaders.append("Content-Type", "text/plain");
-	myHeaders.append("origin", "http://my-web-server.com");
 	var raw = "{\"ksql\": \"SHOW QUERIES;\",  \"streamsProperties\": {}}";
 
 	var options = {
@@ -34,7 +34,8 @@ function getFromServer() {
 						console.log("Try to find query with sink " + sink)
 						for (let queryResponse of queriesResponse) {
 							for (let query of queryResponse.queries) {
-								if (query.sinks.includes(sink)) {
+//								if (query.sinks.includes(sink)) {
+								if (query.sinks.filter(s => new RegExp(sink).test(s)).length > 0) {
 									if(!queryIds.includes(query.id)){
 										//console.log(queryIds)
 										queryIds.push(query.id);
@@ -69,9 +70,17 @@ function getFromServer() {
 
 				let finalQueries = ""
 
+                                for (let i = 0; i < queryIds.length; i++) {
+                                        finalQueries = finalQueries + "\n" + "PAUSE " + queryIds[i] + ";"
+                                }
+                                finalQueries = finalQueries + "\n\n"
 				for (let i = 0; i < queryIds.length; i++) {
-					finalQueries = finalQueries + "\n" + queryIds[i]
+					finalQueries = finalQueries + "\n" + "DROP QUERY " + queryIds[i] + ";"
 				}
+                                finalQueries = finalQueries + "\n\nTOPICS\n-------------------------------\n"
+                                for (let i = 0; i < topics.length; i++) {
+                                        finalQueries = finalQueries + "\n" + topics[i]
+                                }
 				document.getElementById("queries").value = finalQueries
 
 				let finalTopology = ""
